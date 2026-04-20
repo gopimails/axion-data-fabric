@@ -1,0 +1,13 @@
+# Core dependencies for OpenSky data pipeline
+requests==2.31.0
+pandas==2.1.4
+pyarrow==14.0.1
+python-dotenv==1.0.0
+
+# Optional: Airflow for local scheduling
+apache-airflow==2.7.3
+apache-airflow-providers-python==4.6.2
+
+# Development/optional
+pytest==7.4.3
+pytest-cov==4.1.0
