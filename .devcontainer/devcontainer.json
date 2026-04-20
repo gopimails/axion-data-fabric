@@ -1,12 +1,29 @@
 {
-  "name": "Python Dev Container",
-  "image": "mcr.microsoft.com/devcontainers/python:3.11-bookworm",
+  "name": "Python Dev Container with Airflow",
+  "dockerComposeFile": "docker-compose.yml",
+  "service": "app",
+  "runServices": [
+    "app",
+    "airflow"
+  ],
+  "workspaceFolder": "/workspaces/axion-data-fabric",
+  "shutdownAction": "stopCompose",
+  "forwardPorts": [
+    8080
+  ],
+  "portsAttributes": {
+    "8080": {
+      "label": "Airflow web UI",
+      "onAutoForward": "notify"
+    }
+  },
   "customizations": {
     "vscode": {
       "extensions": [
         "ms-python.python",
         "ms-python.vscode-pylint",
         "ms-python.debugpy",
+        "dvirtz.parquet-viewer",
         "openai.chatgpt"
       ]
     }

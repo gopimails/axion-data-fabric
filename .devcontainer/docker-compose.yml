@@ -1,0 +1,44 @@
+services:
+  app:
+    image: mcr.microsoft.com/devcontainers/python:3.11-bookworm
+    command: sleep infinity
+    volumes:
+      - ..:/workspaces/axion-data-fabric:cached
+
+  airflow:
+    image: apache/airflow:2.7.3-python3.11
+    depends_on:
+      - app
+    environment:
+      AIRFLOW__CORE__DAGS_FOLDER: /workspaces/axion-data-fabric/dags
+      AIRFLOW__CORE__EXECUTOR: SequentialExecutor
+      AIRFLOW__CORE__LOAD_EXAMPLES: "false"
+      AIRFLOW__WEBSERVER__EXPOSE_CONFIG: "true"
+      PYTHONPATH: /workspaces/axion-data-fabric
+      STORAGE_PATH: /workspaces/axion-data-fabric/data/raw
+      _AIRFLOW_WWW_USER_USERNAME: admin
+      _AIRFLOW_WWW_USER_PASSWORD: admin
+      _PIP_ADDITIONAL_REQUIREMENTS: requests==2.31.0 pandas==2.1.4 pyarrow==14.0.1 python-dotenv==1.0.0
+    command: >
+      bash -c "
+        set -e;
+        cd /workspaces/axion-data-fabric;
+        airflow db migrate;
+        airflow users create
+          --username admin
+          --password admin
+          --firstname Admin
+          --lastname User
+          --role Admin
+          --email admin@example.com || true;
+        airflow scheduler &
+        exec airflow webserver --port 8080
+      "
+    ports:
+      - "8080:8080"
+    volumes:
+      - ..:/workspaces/axion-data-fabric:cached
+      - airflow-home:/opt/airflow
+
+volumes:
+  airflow-home:

@@ -65,6 +65,21 @@ This pipeline polls the OpenSky Network `/api/states/all` endpoint for aircraft 
 - Python 3.11 or newer
 - pip package manager
 
+### Dev Container with Airflow
+
+This repository includes a VS Code devcontainer that starts two Compose services:
+
+- `app` - the Python development container VS Code attaches to
+- `airflow` - a local Airflow scheduler and web UI sidecar
+
+Reopen the repository in the devcontainer and Airflow will start alongside the editor container. The DAG folder is mounted from `dags/`, so `opensky_ingest_dag` is available in the Airflow UI.
+
+- Airflow UI: `http://localhost:8080`
+- Username: `admin`
+- Password: `admin`
+
+The sidecar writes pipeline output to `data/raw` through the shared workspace mount. If `.env` exists, the Python pipeline can still load OpenSky credentials from it; otherwise it uses the unauthenticated API defaults.
+
 ### Installation
 
 1. **Clone the repository** (if not already done)
@@ -519,4 +534,3 @@ A: Yes. The Parquet format is compatible with Spark, S3, GCS, etc. Replace `src/
 
 **Q: Do I need Airflow?**
 A: No. Use a system scheduler (cron, Task Scheduler) or just run manually. Airflow is optional for convenience.
-
